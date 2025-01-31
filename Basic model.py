@@ -3,12 +3,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 A = np.matrix([[0,1],[1,0]])
-P = [1,-1]
+P = [1,-1]#one producer one consumer
 n = 2
-gamma = 0.2
+gamma = 0.5
 P_k = 0.2
 kappa = 1/P_k
-thetazero = [0,0,0,0]
+thetazero = [1,0,-1,0]
 deltatheta = 1
 
 def dtheta(theta , t):
@@ -23,7 +23,7 @@ print(np.shape(sol0))
 print(sol0[:,0])
 plt.plot(t,sol0[:,0],label = r'$\theta_1$')
 plt.plot(t,sol0[:,2],label = r'$\theta_2$')
-plt.plot(t,sol0[:,0] - sol0[:,2],label = r'$\Delta\theta$')
+#plt.plot(t,sol0[:,0] - sol0[:,2],label = r'$\Delta\theta$')
 plt.xlabel('t')
 plt.ylabel(r'$\theta$')
 plt.legend()
