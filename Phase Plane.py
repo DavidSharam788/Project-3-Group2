@@ -3,12 +3,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 A = np.matrix([[0,1],[1,0]])
-P = [1,-1]#one producer one consumer
+P = [0.5,-0.5]#one producer one consumer
 n = 2
-gamma = 0.5
+gamma = 1
 P_k = 0.2
-kappa = 1/P_k
-thetazero = [1,0]
+kappa = 1
+thetazero = [0,0]
 
 def dw(w , t):
     return [w[1],
