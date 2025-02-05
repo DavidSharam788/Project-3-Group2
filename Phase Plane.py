@@ -14,8 +14,8 @@ def dw(w , t):
     return [w[1],
             2 - gamma * w[1] - 2 * kappa * np.sin(w[0])]
 
-x = np.linspace(-np.pi,np.pi,100)
-y = np.linspace(-np.pi,np.pi,100)
+x = np.linspace(-np.pi,np.pi,1000)
+y = np.linspace(-np.pi,np.pi,1000)
 X, Y = np.meshgrid(x, y)
 Xdot = Y
 Ydot =  2 - gamma * Y - 2 * kappa * np.sin(X)
