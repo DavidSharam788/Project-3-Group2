@@ -5,17 +5,17 @@ import matplotlib.pyplot as plt
 A = np.matrix([[0,1],[1,0]])
 P = [1,-1]#one producer one consumer
 n = 2
-gamma = 0.5
-P_k = 0.2
+gamma = 1
+P_k = 1
 kappa = 1/P_k
 thetazero = [0,0,0,0]
 deltatheta = 1
 
 def dtheta(theta , t):
     return [theta[1], #theta1
-            P[0] - kappa * np.sin(theta[0] - theta[2]) - gamma * theta[1],#dtheta1
-            theta[3],#theta2
-            P[1] - kappa * np.sin(theta[2] - theta[0]) - gamma * theta[3]]#dtheta2
+            P[0] - kappa * np.sin(theta[0] - theta[2]) - gamma * theta[1], #dtheta1
+            theta[3], #theta2
+            P[1] - kappa * np.sin(theta[2] - theta[0]) - gamma * theta[3]] #dtheta2
 
 t = np.arange(0,25,0.05)
 sol0 = sp.odeint(dtheta,thetazero,t)
