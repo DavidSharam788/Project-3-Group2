@@ -2,6 +2,8 @@ import networkx as nx
 import numpy as np
 import matplotlib.pyplot as plt
 
+
+
 # Define parameters
 n = 10  # Number of nodes
 k = 4   # Each node connects to k nearest neighbors

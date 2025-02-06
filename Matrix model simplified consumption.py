@@ -29,24 +29,25 @@ def generateSystem(n = 2):
 
 n = 10  # Number of nodes
 k = 4  # Each node connects to k nearest neighbors
-p = 0.2 # Rewiring probability
+p = 0.1 # Rewiring probability
 
 G = nx.watts_strogatz_graph(n, k, p) # Generate the Watts-Strogatz small-world network
 
 A = nx.to_numpy_array(G) # Compute adjacency matrix
-
+print(A)
+Pmax = n
+gamma = 1
+thetazero = np.zeros(2 * n)
+#thetazero[0] = 1
 (gen,con,pas) = generateSystem(n)
 P = np.zeros(n)
 for i in range(n):
     if (i < gen):
-        P[i] = 1
+        P[i] = Pmax/gen
     elif (i < gen + con):
-        P[i] = -(1 * gen)/con
-
-gamma = 1
-P_k = 0.2
+        P[i] = -(Pmax)/con
+P_k = 1
 kappa = 1/P_k
-thetazero = np.zeros(2 * n)
 
 def dtheta(theta , t):
     systems = []
@@ -58,11 +59,12 @@ def dtheta(theta , t):
         systems.append(system)
     return systems
 
-t = np.arange(0,25,0.05)
-sol = sp.odeint(dtheta,thetazero,t)
-print(np.shape(sol))
-plt.plot(t,sol[:,0::2])
+t = np.arange(0,40,0.1)
 plt.xlabel('t')
 plt.ylabel(r'$\theta$')
+sol = sp.odeint(dtheta,thetazero,t)
+lines = plt.plot(t,sol[:,0::2])
 plt.legend()
 plt.show()
+if(np.abs(sol[-1,0] - sol[-2,0])>0.1):
+    print('Failure')
