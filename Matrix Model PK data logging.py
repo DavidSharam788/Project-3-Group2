@@ -2,8 +2,11 @@ import scipy.integrate as sp
 import numpy as np
 import matplotlib.pyplot as plt
 import networkx as nx
+from openpyxl import Workbook
 
-def generateSystem(n = 2):
+gamma = 1
+
+def generateSystem(n):
     randint = np.random.random_integers(0,10,3)
     total = randint[0]+ randint[1] + randint[2]
     gen = 1
@@ -24,9 +27,9 @@ def generateSystem(n = 2):
             con += 1
         elif(max == pas2):
             pas += 1
-    print((gen,con,pas))
     return(gen,con,pas)
 def dtheta(theta , t):
+    n = len(P)
     systems = []
     for i in range(n):
         systems.append(theta[2 * i + 1])
@@ -36,40 +39,36 @@ def dtheta(theta , t):
         systems.append(system)
     return systems
 
-n = 10  # Number of nodes
-k = 4  # Each node connects to k nearest neighbors
-p = 0.1 # Rewiring probability
+def run_simulation(n = 10,k = 4,p = 0.1,tmax = 40):
+    global A,P,kappa
+    G = nx.watts_strogatz_graph(n, k, p) 
+    A = nx.to_numpy_array(G)
+    thetazero = np.zeros(2 * n)
+    (gen,con,pas) = generateSystem(n)
+    P = np.zeros(n)
+    for i in range(n):
+        if (i < gen):
+            P[i] = n/gen
+        elif (i < gen + con):
+            P[i] = -(n)/con
+    t = np.arange(0,tmax,0.1)
+    plt.xlabel('t')
+    plt.ylabel(r'$\theta$')
+    for i in range(100):
+        P_k = 0.3 + i * 0.3/100
+        kappa = 1/P_k
+        sol = sp.odeint(dtheta,thetazero,t)
+        #print(P_k)
+        if(np.abs(sol[-1,0] - sol[-2,0])>0.01):
+            #print('Failure')
+            ws.append([gen, con, pas,P_k])
+            print(P_k)
+            break
+wb = Workbook()
+ws = wb.active
+for i in range(200):
+    run_simulation(10,4,0.1,40)
+    print('completed ' + str(i))
+wb.save("sample.xlsx")
+print('done')
 
-G = nx.watts_strogatz_graph(n, k, p) # Generate the Watts-Strogatz small-world network
-
-A = nx.to_numpy_array(G) # Compute adjacency matrix
-print(A)
-Pmax = n
-gamma = 1
-thetazero = np.zeros(2 * n)
-#thetazero[0] = 1
-(gen,con,pas) = generateSystem(n)
-P = np.zeros(n)
-for i in range(n):
-    if (i < gen):
-        P[i] = Pmax/gen
-    elif (i < gen + con):
-        P[i] = -(Pmax)/con
-
-t = np.arange(0,40,0.1)
-plt.xlabel('t')
-plt.ylabel(r'$\theta$')
-for i in range(20):
-    P_k = 0.3 + i * 0.3/20
-    kappa = 1/P_k
-    sol = sp.odeint(dtheta,thetazero,t)
-    lines = plt.plot(t,sol[:,0::2],label = P_k)
-    plt.legend()
-    plt.draw()
-    #plt.show()
-    if(np.abs(sol[-1,0] - sol[-2,0])>0.01):
-        print('Failure')
-        print(P_k)
-    plt.pause(1)
-    for line in lines:
-        line.remove()

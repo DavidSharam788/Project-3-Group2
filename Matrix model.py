@@ -3,6 +3,22 @@ import numpy as np
 import matplotlib.pyplot as plt
 import networkx as nx
 
+def poly_eval(func,t):
+    t %= 24
+    n = len(func)
+    val = 0
+    for i in range(n):
+        val += func[i] * t ** (n - i - 1)
+    return val
+
+def getPower(i,t):
+    """ if(P[i]< 0):
+        return -poly_eval(consumptionPoly,t)
+    elif(P[i] > 0):
+        return poly_eval(consumptionPoly,t) """
+    return P[i] * poly_eval(consumptionPoly,t)
+consumptionPoly = [ 1.04201341e-07, -8.94503881e-06,  2.98974192e-04, -4.88601783e-03, 3.98751419e-02, -1.43272977e-01,  1.36065097e-01,  2.63901363e-01]
+
 def generateSystem(n = 2):
     randint = np.random.random_integers(0,10,3)
     total = randint[0]+ randint[1] + randint[2]
@@ -41,28 +57,30 @@ for i in range(n):
     if (i < gen):
         P[i] = 1
     elif (i < gen + con):
+        #P[i] = -1
         P[i] = -(1 * gen)/con
 
+Pmax = 0.6
 gamma = 1
 P_k = 0.2
-kappa = 1/P_k
+kappa = Pmax/P_k
 thetazero = np.zeros(2 * n)
 
 def dtheta(theta , t):
     systems = []
     for i in range(n):
         systems.append(theta[2 * i + 1])
-        system = P[i] - gamma * theta[2 * i + 1]
+        system = getPower(i,t) - gamma * theta[2 * i + 1]
         for j in range(n):
             system -= kappa * A[i,j] * np.sin(theta[2 * i] - theta[2 * j])
         systems.append(system)
     return systems
 
-t = np.arange(0,25,0.05)
+t = np.arange(0,120,0.5)
 sol = sp.odeint(dtheta,thetazero,t)
 print(np.shape(sol))
 plt.plot(t,sol[:,0::2])
 plt.xlabel('t')
 plt.ylabel(r'$\theta$')
-plt.legend()
+#plt.legend()
 plt.show()
