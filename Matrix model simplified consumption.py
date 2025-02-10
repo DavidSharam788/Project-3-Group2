@@ -61,9 +61,9 @@ plt.xlabel('t')
 plt.ylabel(r'$\theta$')
 for i in range(20):
     P_k = 0.3 + i * 0.3/20
-    kappa = 1/P_k
+    kappa = (1.01 - i/20) * n
     sol = sp.odeint(dtheta,thetazero,t)
-    lines = plt.plot(t,sol[:,0::2],label = P_k)
+    lines = plt.plot(t,sol[:,0::2],label = kappa)
     plt.legend()
     plt.draw()
     #plt.show()

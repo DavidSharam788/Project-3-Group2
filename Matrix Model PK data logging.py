@@ -7,15 +7,11 @@ from openpyxl import Workbook
 gamma = 1
 
 def generateSystem(n):
-    randint = np.random.random_integers(0,10,3)
+    randint = np.random.random_integers(1,10,3)
     total = randint[0]+ randint[1] + randint[2]
-    gen = 1
-    con = 1
-    n -= 2
-    gen += (int)(n * randint[0]/total)
-    con += (int)(n * randint[1]/total)
+    gen = (int)(n * randint[0]/total)
+    con = (int)(n * randint[1]/total)
     pas = (int)(n * randint[2]/total)
-    n += 2
     while(gen + con + pas < n):
         gen2 = (n * randint[0]/total) - gen
         con2 = (n * randint[1]/total) - con
@@ -55,15 +51,14 @@ def run_simulation(n = 10,k = 4,p = 0.1,tmax = 40):
     plt.xlabel('t')
     plt.ylabel(r'$\theta$')
     for i in range(100):
-        P_k = 0.3 + i * 0.3/100
-        kappa = 1/P_k
+        kappa = (1.01 - i/100)* n
         sol = sp.odeint(dtheta,thetazero,t)
-        #print(P_k)
         if(np.abs(sol[-1,0] - sol[-2,0])>0.01):
-            #print('Failure')
-            ws.append([gen, con, pas,P_k])
-            print(P_k)
+            ws.append([gen, con, pas,kappa/n])
+            print(kappa/n)
             break
+        elif(i == 99):
+            ws.append([gen, con, pas,0])
 wb = Workbook()
 ws = wb.active
 for i in range(200):
