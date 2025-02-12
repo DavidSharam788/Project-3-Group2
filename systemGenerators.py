@@ -25,7 +25,7 @@ def randomisePower(gen,con,n):
         if (i < gen):
             P[i] = n/gen
         elif (i < gen + con):
-            P[i] = -(n * gen)/con
+            P[i] = -n/con
     return P
 def generateRandomSystem(n):
     (gen,con,pas) = randomiseNodeTypes(n)

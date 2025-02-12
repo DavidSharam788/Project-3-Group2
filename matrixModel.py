@@ -23,3 +23,7 @@ def modelSystem(n,drawGraph = True,k = 4,p = 0.1,gamma = 1, kappa = 5,tmax = 40)
         plt.ylabel(r'$\theta$')
         plt.show()
     return (sol,gen,con,pas,A,P)
+
+(sol,gen,con,pas,A,P) = modelSystem(6,True,2,0.1,1,10,20)
+
+print(sol[-1,1::2])
