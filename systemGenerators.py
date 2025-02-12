@@ -19,7 +19,14 @@ def randomiseNodeTypes(n):
         elif(max == pas2):
             pas += 1
     return(gen,con,pas)
-
+def randomisePower(gen,con,n):
+    P = np.zeros(n)
+    for i in range(n):
+        if (i < gen):
+            P[i] = n/gen
+        elif (i < gen + con):
+            P[i] = -(n * gen)/con
+    return P
 def generateRandomSystem(n):
     (gen,con,pas) = randomiseNodeTypes(n)
     A = np.zeros((n,n))
@@ -30,18 +37,13 @@ def generateRandomSystem(n):
     P = randomisePower(gen,con,n)
     return(gen,con,pas,A,P)
 
-def generateRandomWSSsystem(n,k,p):
+def generateRandomWSSsystem(n,k = 2,p = 0.1):
     (gen,con,pas) = randomiseNodeTypes(n)
     G = nx.watts_strogatz_graph(n, k, p) 
     A = nx.to_numpy_array(G)
     P = randomisePower(gen,con,n)
     return(gen,con,pas,A,P)
 
-def randomisePower(gen,con,n):
-    P = np.zeros(n)
-    for i in range(n):
-        if (i < gen):
-            P[i] = n/gen
-        elif (i < gen + con):
-            P[i] = -(n * gen)/con
-    return P
+
+
+print(generateRandomWSSsystem(4))

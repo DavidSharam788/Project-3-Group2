@@ -2,6 +2,8 @@ import numpy as np
 import csv
 import matplotlib.pyplot as plt
 
+consumptionPoly = [ 1.04201341e-07, -8.94503881e-06,  2.98974192e-04, -4.88601783e-03, 3.98751419e-02, -1.43272977e-01,  1.36065097e-01,  2.63901363e-01]
+
 def poly_eval(func,t):
     n = len(func)
     val = 0
