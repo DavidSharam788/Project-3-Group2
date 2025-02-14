@@ -4,22 +4,35 @@ import matplotlib.pyplot as plt
 import networkx as nx
 from openpyxl import Workbook
 import matrixModel as MM
+import systemGenerators as SG
+import datetime
+
+def checkDesync(sols,n):
+    thetasols = sols[:,0::2]
+    for i in range(n):
+        if(np.abs(thetasols[-1,i]) > 1):
+            return True
+    return False
 
 
-def run_simulation(n,k,p,tmax):
+def run_simulation(n,k,p,tmax,gen,con,pas):
     for i in range(100):
         kappa = (1.01 - i/100) * n
-        (sols,gen,con,pas,A,P) = MM.modelSystem(n,False,k,p,1,kappa,tmax)
-        if(np.abs(sols[-1,0] - sols[-2,0]) > 0.01):
+        print("trying kappa = " + str(kappa))
+        P = SG.randomisePower(gen,con,n)
+        (sols,A,P) = MM.modelSystemP(n,P,False,k,p,1,kappa,tmax)
+        if(checkDesync(sols,n)):
             ws.append([gen,con,pas,kappa/n])
+            break
         elif(i == 99):
             ws.append([gen,con,pas,0])
 
 wb = Workbook()
 ws = wb.active
-for i in range(200):
-    run_simulation(10,4,0.1,40)
-    print('completed ' + str(i))
+for i in range(0,21): #gen
+    for j in range(0,21 - i): #con
+        run_simulation(20,4,0.1,40,i,j,20 - i - j)
+        print('completed: ' + str(i) + " generators and " + str(j) + " consumers.")
 wb.save("sample.xlsx")
 print('done')
 
