@@ -42,7 +42,7 @@ def generateRandomWSSsystem(n,k = 2,p = 0.1):
     G = nx.watts_strogatz_graph(n, k, p) 
     A = nx.to_numpy_array(G)
     P = randomisePower(gen,con,n)
-    return(gen,con,pas,A,P)
+    return(gen,con,pas,A,P,G)
 
 def generateRandomWSSsystemP(n,k = 2,p = 0.1):
     G = nx.watts_strogatz_graph(n, k, p) 

@@ -18,20 +18,14 @@ for i in range(dat_len):
     kc[i] = sheet_obj.cell(row = i + 1, column = 4).value
 
 fig = plt.figure()
-ax = plt.subplot(projection="ternary", ternary_sum = 10)
+ax = plt.subplot(projection="ternary", ternary_sum = 20)
 ax.set_tlabel("generator")
 ax.set_llabel("consumer")
 ax.set_rlabel("passive")
 ax.grid()
 
-vmin = 0.14
-vmax = 0.4
-levels = np.linspace(vmin, vmax, 10)
 
-levels = np.append(levels,1.01)
-print(levels)
-
-pc = ax.tricontourf(gen, con, pas, kc,levels = levels)
+pc = ax.tricontourf(gen, con, pas, kc)
 
 cax = ax.inset_axes([1.05, 0.1, 0.05, 0.9], transform=ax.transAxes)
 colorbar = fig.colorbar(pc, cax=cax)

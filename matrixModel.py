@@ -5,7 +5,7 @@ import systemGenerators as SG
 
 def modelSystem(n,drawGraph = True,k = 4,p = 0.1,gamma = 1, kappa = 5,tmax = 40):
     thetazero = np.zeros(2 * n)
-    (gen,con,pas,A,P) = SG.generateRandomWSSsystem(n,k,p)
+    (gen,con,pas,A,P,G) = SG.generateRandomWSSsystem(n,k,p)
     def dtheta(theta , t):
         systems = []
         for i in range(n):
@@ -22,7 +22,7 @@ def modelSystem(n,drawGraph = True,k = 4,p = 0.1,gamma = 1, kappa = 5,tmax = 40)
         plt.xlabel('t')
         plt.ylabel(r'$\theta$')
         plt.show()
-    return (sol,gen,con,pas,A,P)
+    return (sol,gen,con,pas,A,P,G)
 
 def modelSystemP(n,P,drawGraph = True,k = 4,p = 0.1,gamma = 1, kappa = 5,tmax = 40):
     thetazero = np.zeros(2 * n)
