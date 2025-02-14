@@ -51,4 +51,4 @@ def generateRandomWSSsystemP(n,k = 2,p = 0.1):
 
 
 
-print(generateRandomWSSsystem(4))
+#print(generateRandomWSSsystem(4))

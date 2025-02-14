@@ -27,12 +27,13 @@ def run_simulation(n,k,p,tmax,gen,con,pas):
         elif(i == 99):
             ws.append([gen,con,pas,0])
 
-wb = Workbook()
-ws = wb.active
-for i in range(0,21): #gen
-    for j in range(0,21 - i): #con
-        run_simulation(20,4,0.1,40,i,j,20 - i - j)
-        print('completed: ' + str(i) + " generators and " + str(j) + " consumers.")
-wb.save("sample.xlsx")
-print('done')
+for a in range(10):
+    wb = Workbook()
+    ws = wb.active
+    for i in range(0,21): #gen
+        for j in range(0,21 - i): #con
+            run_simulation(20,4,0.1,40,i,j,20 - i - j)
+            print('completed: ' + str(i) + " generators and " + str(j) + " consumers.")
+    wb.save("sample"+str(a)+".xlsx")
+    print('done' + str(a))
 

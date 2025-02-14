@@ -45,6 +45,6 @@ def modelSystemP(n,P,drawGraph = True,k = 4,p = 0.1,gamma = 1, kappa = 5,tmax = 
         plt.show()
     return (sol,A,P)
 
-(sol,gen,con,pas,A,P) = modelSystem(6,True,2,0.1,1,10,20)
+#(sol,gen,con,pas,A,P) = modelSystem(6,True,2,0.1,1,10,20)
 
-print(sol[-1,1::2])
+#print(sol[-1,1::2])
