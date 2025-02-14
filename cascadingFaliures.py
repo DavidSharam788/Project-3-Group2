@@ -35,17 +35,17 @@ def dtheta(t,theta,G):
                 system -= kappa * A[i,j] * np.sin(theta[2 * i] - theta[2 * j])
             systems.append(system)
         return systems
-def k1(f,t,y,h):
-    return f(t,y)
-def k2(f,t,y,h):
-    return f(t + h/2, y + h/2 * k1(f,t,y,h))
-def k3(f,t,y,h):
-    return f(t + h/2, y + h/2 * k2(f,t,y,h))
-def k4(f,t,y,h):
-    return f(t + h/2, y + h * k3(f,t,y,h))
+def k1(f,t,y,h,G):
+    return f(t,y,G)
+def k2(f,t,y,h,G):
+    return f(t + h/2, y + h/2 * k1(f,t,y,h),G)
+def k3(f,t,y,h,G):
+    return f(t + h/2, y + h/2 * k2(f,t,y,h),G)
+def k4(f,t,y,h,G):
+    return f(t + h/2, y + h * k3(f,t,y,h),G)
 def timestep(G,thetazero):
     stepsize = 1/100
-    thetas = thetazero + stepsize/6 * (k1(dtheta,0,thetazero,stepsize) + 2 * k2(dtheta,0,thetazero,stepsize) + 2 * k3(dtheta,0,thetazero,stepsize) + k4(dtheta,0,thetazero,stepsize))
+    thetas = thetazero + stepsize/6 * (k1(dtheta,0,thetazero,stepsize,G) + 2 * k2(dtheta,0,thetazero,stepsize,G) + 2 * k3(dtheta,0,thetazero,stepsize,G) + k4(dtheta,0,thetazero,stepsize,G))
     return thetas
 
 def netMon(G,thetazero,alpha):
@@ -57,13 +57,13 @@ def netMon(G,thetazero,alpha):
             return 0
         if(steadyState(thetas)):
             return G.number_of_edges()
-        for edge in G.edges():
+        for edge in list(G.edges):
             if(edgePower(edge,thetas) > alpha):
                 finished = True
-    for edge in G.edges():
+    for edge in list(G.edges):
         if(edgePower(edge,thetas) > alpha):
                 G.remove_edge(edge)
-    for i in range(G.nodes):
+    for i in range(G.number_of_nodes()):
         thetahzero = thetas[i]
         S += netMon(G,thetahzero,alpha)
     return S
@@ -74,9 +74,9 @@ def dynamicCascade(n,alpha):
     thetazero = sol
     n = G.number_of_nodes()
     m = G.number_of_edges()
-    edges = G.edges()
-    G.remove_edge(edges[1])
-    for i in range(len(G.nodes)):
+    edges = list(G.edges)
+    G.remove_edge(edges[0][0],edges[0][1])
+    for i in range(n):
         thetahzero = thetazero[i : i + 1]
         S += netMon(G,thetahzero,alpha)
     return S/m
