@@ -50,5 +50,4 @@ def generateRandomWSSsystemP(n,k = 2,p = 0.1):
     return(A)
 
 
-
 #print(generateRandomWSSsystem(4))

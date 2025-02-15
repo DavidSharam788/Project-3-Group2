@@ -3,6 +3,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-G = nx.random_lobster(20,0.5,0.1)
+G = nx.random_lobster(10,0.2,0.2)
 nx.draw(G)
 plt.show()
