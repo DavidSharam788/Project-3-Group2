@@ -73,35 +73,25 @@ def netMon(G,thetazero,alpha,P):
     dem = 0
     for i in range(len(P)):
         if(P[i] < 0):
-            dem += 1
+            dem += P[i]
         if(P[i] > 0):
-            sup += 1
-    print(str(sup) + " " + str(dem) + " " + str(n))
-    if(sup == 0 or dem == 0):
-        print("Not enough gen/con to steady state")
-        return 0
+            sup += P[i]
     for i in range(len(P)):
         if(P[i] < 0):
-            P[i] = -n/dem
+            P[i] = n * 1/dem
         if(P[i] > 0):
-            P[i] = n/sup
-    
+            P[i] = n * 1/sup
     while (finished == False):
         lastthetazero = thetazero
         thetazero = timestep(G,thetazero,P)
         if(checkAllDesync(thetazero)):
-            print("Desync")
             finished = True
             break
         if(steadyState(thetazero,lastthetazero)):
-            print("Steady state")
-            nx.draw(G)
-            plt.show()
             return G.number_of_edges()
         edges = list(G.edges)
         for i in range(len(edges)):
             if(edgePower(edges[i],thetazero,kappa,G) > alpha):
-                print("Edge Overload")
                 finished = True
                 break
     edges = list(G.edges)
@@ -111,11 +101,9 @@ def netMon(G,thetazero,alpha,P):
     for i in range(len(edges)):
         if(np.abs(edgePower(edges[i],thetazero,kappa,G)) > alpha):
             removed_edges.append((edges[i][0],edges[i][1]))
-            print("remove "+ str((edges[i][0],edges[i][1])))
     for i in range(len(nodes)):
         if(checkSpecDesync(thetazero,i)):
             removed_nodes.append(nodes[i])
-            print("remove "+ str(nodes[i]))
     thetazeronew = []
     Pnew = []
     H = nx.Graph()
@@ -131,16 +119,18 @@ def netMon(G,thetazero,alpha,P):
     if(H.number_of_nodes() > 0 and H.number_of_edges() > 0):
         for c in nx.connected_components(H):
             Subgraph = H.subgraph(c).copy()
-            print(Subgraph)
-            pSub = []
-            thetazeroSub =[]
-            nodes = list(H.nodes)
-            for i in c:
-                j = nodes.index(i)
-                pSub.append(P[j])
-                thetazeroSub.append(thetazeronew[2 * j])
-                thetazeroSub.append(thetazeronew[2 * j + 1])
-            S += netMon(Subgraph,thetazeroSub,alpha,pSub)
+            if(Subgraph.number_of_nodes() > 0 and Subgraph.number_of_edges() > 0):
+                pSub = []
+                thetazeroSub =[]
+                nodes = list(H.nodes)
+                for i in c:
+                    j = nodes.index(i)
+                    pSub.append(P[j])
+                    thetazeroSub.append(thetazeronew[2 * j])
+                    thetazeroSub.append(thetazeronew[2 * j + 1])
+                S += netMon(Subgraph,thetazeroSub,alpha,pSub)
+            else:
+                return 0
     else:
         return 0
     return S
@@ -148,9 +138,6 @@ def netMon(G,thetazero,alpha,P):
 def dynamicCascade(n,alpha,G,gen,con,pas,p):
     S = 0
     (sol,gen,con,pas,A,P,G) = MM.modelSystemFromSystem(n,gen,con,pas,p,G,False,gamma,kappa,40)
-    print(gen,con,pas)
-    print(G)
-
     thetazero = sol[-1,:]
     n = G.number_of_nodes()
     m = G.number_of_edges()
@@ -168,7 +155,6 @@ def dynamicCascade(n,alpha,G,gen,con,pas,p):
 
 n=20
 alpha = 10
-acastar = 0.9
 kappa = n
 gamma = 1
 gen = 10
@@ -176,6 +162,15 @@ con = 10
 pas = 0
 k = 4
 p = 0.1
+intervals = 100
 G = nx.watts_strogatz_graph(n, k, p) 
-P = SG.randomisePower(gen,con,n)
-print(dynamicCascade(n,alpha,G,gen,con,pas,P))
+print(G)
+S = []
+acastars = np.linspace(0.1,1,intervals)
+for a in range(intervals):
+    acastar = acastars[a]
+    P = SG.randomisePower(gen,con,n)
+    S.append(dynamicCascade(n,alpha,G.copy(),gen,con,pas,P))
+    print("Completed "+ str(a + 1) + "/" + str(intervals) + ": S=" + str(S[-1]))
+plt.plot(acastars,S)
+plt.show()

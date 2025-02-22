@@ -20,12 +20,24 @@ def randomiseNodeTypes(n):
             pas += 1
     return(gen,con,pas)
 def randomisePower(gen,con,n):
+    currentGen = 0
+    currentCon = 0
     P = np.zeros(n)
     for i in range(n):
-        if (i < gen):
+        if(currentCon < con):
+            if(currentGen < gen):
+                if(np.random.random() > 0.5):
+                    P[i] = n/gen
+                    currentGen += 1
+                else:
+                    P[i] = -n/con
+                    currentCon += 1
+            else:
+                P[i] = -n/con
+                currentCon += 1
+        else:
             P[i] = n/gen
-        elif (i < gen + con):
-            P[i] = -n/con
+            currentGen += 1
     return P
 def generateRandomSystem(n):
     (gen,con,pas) = randomiseNodeTypes(n)
