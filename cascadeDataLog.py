@@ -23,7 +23,7 @@ S = []
 acastars = np.linspace(0.5,1,intervals)
 for a in range(intervals):
     acastar = acastars[a]
-    S.append(CF.dynamicCascade(n,acastar,G.copy(),P.copy()))
+    S.append(CF.dynamicCascade(acastar,G.copy(),P.copy()))
     print("Completed "+ str(a + 1) + "/" + str(intervals) + ": S=" + str(S[-1]))
 plt.plot(acastars,S)
 plt.show()
