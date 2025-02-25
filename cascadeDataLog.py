@@ -20,7 +20,7 @@ P = SG.randomisePower(gen,con,n)
 print(G.copy())
 print(P.copy())
 S = []
-acastars = np.linspace(0.5,1,intervals)
+acastars = np.linspace(0.5,1.5,intervals)
 for a in range(intervals):
     acastar = acastars[a]
     S.append(CF.dynamicCascade(acastar,G.copy(),P.copy()))
