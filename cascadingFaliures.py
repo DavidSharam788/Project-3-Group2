@@ -54,7 +54,8 @@ def dtheta(t,theta,G,P):
 
 def timestep(G,thetazero,P):
     stepsize = 1/2000
-    thetas = NM.RungeKutta4(G,thetazero,P,stepsize,dtheta)
+    #thetas = NM.RungeKutta4(G,thetazero,P,stepsize,dtheta)
+    thetas = NM.RKF(G,thetazero,P,stepsize,dtheta)
     return thetas
 
 def netMon(G,thetazero,alpha,P,debug = False):
@@ -192,4 +193,4 @@ k = 4
 p = 0.1
 G = nx.watts_strogatz_graph(n, k, p) 
 P = SG.randomisePower(gen,con,n)
-#print(dynamicCascade(alphastar,G,P,True))
+print(dynamicCascade(alphastar,G,P,True))
