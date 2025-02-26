@@ -3,6 +3,7 @@ import matrixModel as MM
 import networkx as nx
 import matplotlib.pyplot as plt
 import systemGenerators as SG
+import NumericalMethods as NM
 
 gamma = 1
 kappa = 1
@@ -51,17 +52,10 @@ def dtheta(t,theta,G,P):
         systems[2 * i + 1] = system
     return systems
 
-def k1(f,t,y,h,G,P):
-    return f(t,y,G,P)
-def k2(f,t,y,h,G,P):
-    return f(t + h/2, y + h/2 * k1(f,t,y,h,G,P),G,P)
-def k3(f,t,y,h,G,P):
-    return f(t + h/2, y + h/2 * k2(f,t,y,h,G,P),G,P)
-def k4(f,t,y,h,G,P):
-    return f(t + h/2, y + h * k3(f,t,y,h,G,P),G,P)
 def timestep(G,thetazero,P):
     stepsize = 1/200
-    thetas = thetazero + stepsize/6 * (k1(dtheta,0,thetazero,stepsize,G,P) + 2 * k2(dtheta,0,thetazero,stepsize,G,P) + 2 * k3(dtheta,0,thetazero,stepsize,G,P) + k4(dtheta,0,thetazero,stepsize,G,P))
+    #thetas = NM.RungeKutta4(G,thetazero,P,stepsize,dtheta)
+    thetas = NM.RKF(G,thetazero,P,stepsize,dtheta)
     return thetas
 
 def netMon(G,thetazero,alpha,P,debug = False):
@@ -197,4 +191,4 @@ k = 4
 p = 0.1
 G = nx.watts_strogatz_graph(n, k, p) 
 P = SG.randomisePower(gen,con,n)
-#print(dynamicCascade(n,alphastar,G,P,True))
+print(dynamicCascade(alphastar,G,P,True))
