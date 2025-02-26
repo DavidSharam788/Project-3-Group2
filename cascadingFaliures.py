@@ -10,7 +10,7 @@ kappa = 1
 
 def steadyState(thetas,lastthetas):
     for i in range (len(thetas)):
-        if(np.abs(thetas[i] - lastthetas[i]) > 0.001):
+        if(np.abs(thetas[i] - lastthetas[i]) > 0.0001):
             return False
     return True
 
@@ -53,9 +53,8 @@ def dtheta(t,theta,G,P):
     return systems
 
 def timestep(G,thetazero,P):
-    stepsize = 1/200
-    #thetas = NM.RungeKutta4(G,thetazero,P,stepsize,dtheta)
-    thetas = NM.RKF(G,thetazero,P,stepsize,dtheta)
+    stepsize = 1/2000
+    thetas = NM.RungeKutta4(G,thetazero,P,stepsize,dtheta)
     return thetas
 
 def netMon(G,thetazero,alpha,P,debug = False):
@@ -171,10 +170,12 @@ def dynamicCascade(alphastar,G,p,debug = False):
     bigEdge = 0
     bigEdgePower = 0
     for i in range(len(edges)):
-        if(edgePower(edges[i],thetazero,kappa,G) > bigEdgePower):
+        if(np.abs(edgePower(edges[i],thetazero,kappa,G)) > bigEdgePower):
             bigEdge = i
-            bigEdgePower = edgePower(edges[i],thetazero,kappa,G)
+            bigEdgePower = np.abs(edgePower(edges[i],thetazero,kappa,G))
     alpha = alphastar * bigEdgePower
+    if(debug):
+        print("alpha=" + str(alpha))
     G.remove_edge(edges[bigEdge][0],edges[bigEdge][1])
     S += netMon(G,thetazero,alpha,P,debug)
     return S/(m-1)
@@ -191,4 +192,4 @@ k = 4
 p = 0.1
 G = nx.watts_strogatz_graph(n, k, p) 
 P = SG.randomisePower(gen,con,n)
-print(dynamicCascade(alphastar,G,P,True))
+#print(dynamicCascade(alphastar,G,P,True))
