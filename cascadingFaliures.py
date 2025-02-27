@@ -14,6 +14,30 @@ def steadyState(thetas,lastthetas):
             return False
     return True
 
+def drawNetwork(G,P):
+    gen = []
+    con = []
+    pas = []
+    nodes = list(G.nodes)
+    for i in range(len(P)):
+        if(P[i] > 0):
+            gen.append(nodes[i])
+        elif(P[i] < 0):
+            con.append(nodes[i])
+        else:
+            pas.append(nodes[i])
+        
+    pos = nx.circular_layout(G)
+    options = {"edgecolors": "tab:gray", "node_size": 400, "alpha": 0.9}
+    if(len(gen)>0):
+        nx.draw_networkx_nodes(G, pos, nodelist=gen, node_color="tab:red", **options)
+    if(len(con)>0):
+        nx.draw_networkx_nodes(G, pos, nodelist=con, node_color="tab:blue", **options)
+    if(len(pas)>0):
+        nx.draw_networkx_nodes(G, pos, nodelist=pas, node_color="tab:gray", **options)
+    nx.draw_networkx_edges(G, pos, width=1.0, alpha=0.5)
+    nx.draw_networkx_labels(G, pos)
+    plt.show()
 
 def checkSpecDesync(thetas,i):
     thetas = thetas[1::2]
@@ -54,8 +78,8 @@ def dtheta(t,theta,G,P):
 
 def timestep(G,thetazero,P):
     stepsize = 1/2000
-    #thetas = NM.RungeKutta4(G,thetazero,P,stepsize,dtheta)
-    thetas = NM.RKF(G,thetazero,P,stepsize,dtheta)
+    thetas = NM.RungeKutta4(G,thetazero,P,stepsize,dtheta)
+    #thetas = NM.RKF(G,thetazero,P,stepsize,dtheta)
     return thetas
 
 def netMon(G,thetazero,alpha,P,debug = False):
@@ -93,14 +117,13 @@ def netMon(G,thetazero,alpha,P,debug = False):
         if(steadyState(thetazero,lastthetazero)):
             if(debug):
                 print("Steady state")
-                nx.draw(G)
-                plt.show()
+                drawNetwork(G,P)
             return G.number_of_edges()
         edges = list(G.edges)
         for i in range(len(edges)):
             if(edgePower(edges[i],thetazero,kappa,G) > alpha):
                 if(debug):
-                    print("Edge Overload")
+                    print("Edge Overload: " + str(edgePower(edges[i],thetazero,kappa,G)))
                 finished = True
                 break
     edges = list(G.edges)
@@ -177,13 +200,14 @@ def dynamicCascade(alphastar,G,p,debug = False):
     alpha = alphastar * bigEdgePower
     if(debug):
         print("alpha=" + str(alpha))
+        drawNetwork(G,P)
     G.remove_edge(edges[bigEdge][0],edges[bigEdge][1])
     S += netMon(G,thetazero,alpha,P,debug)
     return S/(m-1)
 
 n=30
 alpha = 10
-alphastar = 0.5
+alphastar = 1
 kappa = n
 gamma = 1
 gen = 15
@@ -193,4 +217,5 @@ k = 4
 p = 0.1
 G = nx.watts_strogatz_graph(n, k, p) 
 P = SG.randomisePower(gen,con,n)
-print(dynamicCascade(alphastar,G,P,True))
+#P = SG.fixedAlternatePower(gen,con,n)
+#print(dynamicCascade(alphastar,G,P,True))

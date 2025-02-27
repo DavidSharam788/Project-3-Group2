@@ -18,7 +18,28 @@ def randomiseNodeTypes(n):
             con += 1
         elif(max == pas2):
             pas += 1
-    return(gen,con,pas)
+    return(gen,con,pas)#
+
+def fixedAlternatePower(gen,con,n):
+    P = np.zeros(n)
+    matched = 0
+    if(gen < con):
+        matched = gen
+    else:
+        matched = con
+    for i in range(matched):
+        P[2 * i] =  n/gen
+        P[2 * i + 1] = -n/con
+    for i in range(matched,n-matched):
+        if(gen > i):
+            P[2 * i] =  n/gen
+        elif(con > i):
+            P[2 * i] = -n/con
+        else:
+            P[2 * i] = 0
+    return P
+
+
 def randomisePower(gen,con,n):
     currentGen = 0
     currentCon = 0
