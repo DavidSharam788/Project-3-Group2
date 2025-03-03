@@ -17,9 +17,9 @@ pas = 0
 k = 4
 p = 0.1
 intervals = 10
+wb = Workbook()
+ws = wb.active
 for i in range(10):
-    wb = Workbook()
-    ws = wb.active
     G = nx.watts_strogatz_graph(n, k, p) 
     P = SG.randomisePower(gen,con,n)
     print(G.copy())
@@ -29,7 +29,7 @@ for i in range(10):
     for a in range(intervals):
         acastar = acastars[a]
         S.append(CF.dynamicCascade(acastar,G.copy(),P.copy()))
-        ws.append(S)
-    wb.save("renamefile.xlsx")
+    ws.append(S)
+wb.save("renamefile.xlsx")
 #plt.plot(acastars,S)
 #plt.show()
