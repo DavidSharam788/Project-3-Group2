@@ -15,12 +15,13 @@ def checkDesync(sols,n):
     return False
 
 
-def run_simulation(n,k,p,tmax,gen,con,pas):
+def run_simulation(n,tmax,gen,con,pas):
     for i in range(100):
         kappa = (1.01 - i/100) * n
         print("trying kappa = " + str(kappa))
         P = SG.randomisePower(gen,con,n)
-        (sols,A,P) = MM.modelSystemP(n,P,False,k,p,1,kappa,tmax)
+        G = SG.barabasi_albert_graph(n,2)
+        (sols,gen,con,pas,A,P,G) = MM.modelSystemFromSystem(n,gen,con,pas,P,G,False,1,kappa,tmax)
         if(checkDesync(sols,n)):
             ws.append([gen,con,pas,kappa/n])
             break
@@ -32,8 +33,8 @@ for a in range(10):
     ws = wb.active
     for i in range(0,21): #gen
         for j in range(0,21 - i): #con
-            run_simulation(20,4,0.1,40,i,j,20 - i - j)
+            run_simulation(20,40,i,j,20 - i - j)
             print('completed: ' + str(i) + " generators and " + str(j) + " consumers.")
-    wb.save("sample"+str(a)+".xlsx")
+    wb.save("sampleBA"+str(a)+".xlsx")
     print('done' + str(a))
 

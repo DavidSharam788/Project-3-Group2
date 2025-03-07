@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import openpyxl
 import numpy as np
 
+
 path = "sample.xlsx"
 wb_obj = openpyxl.load_workbook(path)
 sheet_obj = wb_obj.active
@@ -24,8 +25,19 @@ ax.set_llabel("consumer")
 ax.set_rlabel("passive")
 ax.grid()
 
+tick_values = [0, 5, 10, 15, 20]
+ax.taxis.set_ticks(tick_values)
+ax.laxis.set_ticks(tick_values)
+ax.raxis.set_ticks(tick_values)
 
-pc = ax.tricontourf(gen, con, pas, kc)
+ax.taxis.set_label_position('tick2')
+ax.laxis.set_label_position('tick2')
+ax.raxis.set_label_position('tick2')
+plt.title(r"$\kappa_c$ for Lattice Networks (n = 20)")
+
+
+
+pc = ax.tricontourf(pas, gen, con, kc)
 
 cax = ax.inset_axes([1.05, 0.1, 0.05, 0.9], transform=ax.transAxes)
 colorbar = fig.colorbar(pc, cax=cax)

@@ -1,5 +1,29 @@
 import numpy as np
 import networkx as nx
+import matplotlib.pyplot as plt
+import random
+
+def barabasi_albert_graph(n, m, seed=None):
+    if m < 1 or m >= n:
+        raise nx.NetworkXError(
+            "Barabási–Albert network must have m >= 1 and m < n, "
+            "m = %d, n = %d" % (m, n)
+        )
+    if seed is not None:
+        random.seed(seed)
+    G = nx.empty_graph(m)
+    G.name = "barabasi_albert_graph(%s,%s)" % (n, m)
+    targets = list(range(m))
+    repeated_nodes = []
+    source = m
+    while source < n:
+        G.add_edges_from(zip([source] * m, targets))
+        repeated_nodes.extend(targets)
+        repeated_nodes.extend([source] * m)
+        targets = random.sample(repeated_nodes, m)
+        source += 1
+
+    return G
 
 def randomiseNodeTypes(n):
     randint = np.random.random_integers(0,10,3)
@@ -56,7 +80,7 @@ def randomisePower(gen,con,n):
             else:
                 P[i] = -n/con
                 currentCon += 1
-        else:
+        elif(currentGen < gen):
             P[i] = n/gen
             currentGen += 1
     return P
@@ -82,5 +106,33 @@ def generateRandomWSSsystemP(n,k = 2,p = 0.1):
     A = nx.to_numpy_array(G)
     return(A)
 
+def drawNetwork(G,P):
+    gen = []
+    con = []
+    pas = []
+    nodes = list(G.nodes)
+    for i in range(len(P)):
+        if(P[i] > 0):
+            gen.append(nodes[i])
+        elif(P[i] < 0):
+            con.append(nodes[i])
+        else:
+            pas.append(nodes[i])
+        
+    pos = nx.circular_layout(G,1)
+    options = {"edgecolors": "black", "node_size": 800, "alpha": 1}
+    if(len(gen)>0):
+        nx.draw_networkx_nodes(G, pos, nodelist=gen, node_color="tab:red", **options)
+    if(len(con)>0):
+        nx.draw_networkx_nodes(G, pos, nodelist=con, node_color="tab:blue", **options)
+    if(len(pas)>0):
+        nx.draw_networkx_nodes(G, pos, nodelist=pas, node_color="tab:gray", **options)
+    nx.draw_networkx_edges(G, pos,width = 2)
+    nx.draw_networkx_labels(G, pos,font_weight='bold')
+    plt.show()
+
 
 #print(generateRandomWSSsystem(4))
+# G = barabasi_albert_graph(20, 2)
+# P = randomisePower(10,10,20)
+# drawNetwork(G,P)
