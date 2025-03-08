@@ -4,9 +4,8 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import systemGenerators as SG
 import cascadingFaliures as CF
+import cascadePlus as CP
 from openpyxl import Workbook
-
-
 
 n=30
 kappa = n
@@ -28,7 +27,8 @@ for i in range(10):
     acastars = np.linspace(0.5,1.5,intervals)
     for a in range(intervals):
         acastar = acastars[a]
-        S.append(CF.dynamicCascade(acastar,G.copy(),P.copy()))
+        #S.append(CF.dynamicCascade(acastar,G.copy(),P.copy()))
+        S.append(CP.dynamicCascade(acastar,G.copy(),P.copy()))
     ws.append(S)
 wb.save("renamefile.xlsx")
 #plt.plot(acastars,S)
