@@ -131,7 +131,15 @@ def drawNetwork(G,P):
     nx.draw_networkx_labels(G, pos,font_weight='bold')
     plt.show()
 
-
+def randomSolars(n,s):
+    Solars = np.zeros(n)
+    for i in range(s):
+        found = False
+        while found == False:
+            if(Solars[random.randint(1,n-1)] == 0):
+                Solars[random.randint(1,n-1)] = 1
+                found = True
+    return Solars
 #print(generateRandomWSSsystem(4))
 # G = barabasi_albert_graph(20, 2)
 # P = randomisePower(10,10,20)

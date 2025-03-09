@@ -1,10 +1,35 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from openpyxl import Workbook
+from openpyxl import load_workbook
 
-x = np.linspace(0.5,1.5,10)
-y = [0.04124293785,0.07005649718,0.1717514124,0.3248587571,0.5576271186,0.7310734463,0.893785310,0.9322033898,0.9790960452,0.997740113]
+wb = load_workbook(filename = 'CascadeData.xlsx')
+sheet_obj = wb.active
+data_width = 10
+dat_len = sheet_obj.max_row
+acastars = []
+Data1 = np.zeros(data_width)
+Data2 = np.zeros(data_width)
+Data3 = np.zeros(data_width)
+Data4 = np.zeros(data_width)
 
-plt.plot(x,y)
-plt.ylabel("S")
+for i in range(dat_len):
+    for j in range(data_width):
+        if(i == 0):
+            acastars.append(sheet_obj.cell(row = i + 1, column = j + 1).value)
+        elif((i-1)%4 == 0):
+            Data1[j] += float(sheet_obj.cell(row = i + 1, column = j + 1).value)/10
+        elif((i-1)%4 == 1):
+            Data2[j] += int(sheet_obj.cell(row = i + 1, column = j + 1).value)/590
+        elif((i-1)%4 == 2):
+            Data3[j] += int(sheet_obj.cell(row = i + 1, column = j + 1).value)/590
+        elif((i-1)%4 == 3):
+            Data4[j] += float(sheet_obj.cell(row = i + 1, column = j + 1).value)/10
+#plt.plot(acastars,Data1,label = 'S')
+#plt.plot(acastars,Data2,label = 'Overloads')
+#plt.plot(acastars,Data3,label = 'Desyncs')
+plt.plot(acastars,Data4)
+plt.legend()
+plt.ylabel("Cascade duration")
 plt.xlabel(r"$\alpha_c$")
 plt.show()

@@ -83,6 +83,8 @@ def timestep(G,thetazero,P):
     return (thetas,stepsize)
 
 def netMon(G,thetazero,alpha,P,debug = False):
+    if(G.number_of_edges() == 0):
+        return (0,0,0,0)
     S = 0
     edgesBroken = 0
     nodesFailed = 0
@@ -227,4 +229,4 @@ p = 0.1
 G = nx.watts_strogatz_graph(n, k, p) 
 P = SG.randomisePower(gen,con,n)
 #P = SG.fixedAlternatePower(gen,con,n)
-print(dynamicCascade(alphastar,G,P,True))
+#print(dynamicCascade(alphastar,G,P,True))

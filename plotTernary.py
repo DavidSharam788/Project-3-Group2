@@ -4,7 +4,7 @@ import openpyxl
 import numpy as np
 
 
-path = "sample.xlsx"
+path = "sampleBA0.xlsx"
 wb_obj = openpyxl.load_workbook(path)
 sheet_obj = wb_obj.active
 dat_len = sheet_obj.max_row
@@ -33,7 +33,7 @@ ax.raxis.set_ticks(tick_values)
 ax.taxis.set_label_position('tick2')
 ax.laxis.set_label_position('tick2')
 ax.raxis.set_label_position('tick2')
-plt.title(r"$\kappa_c$ for Lattice Networks (n = 20)")
+plt.title(r"$\kappa_c$ for Barabasi-Albert Lattice Networks (n = 20)")
 
 
 
