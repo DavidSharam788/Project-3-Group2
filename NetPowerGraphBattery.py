@@ -1,12 +1,6 @@
-import scipy.integrate as sp
 import numpy as np
-import matplotlib.pyplot as plt
 import systemGenerators as SG
-import networkx as nx
-import math
-
-batteryMaxChargeRate = 5
-
+import matplotlib.pyplot as plt
 def poly_eval(func,t):
     n = len(func)
     val = 0
@@ -29,51 +23,67 @@ def netPower(t,i,Solars):
         power += getGen(t)
         power += doBattery(power)
     return power
-
 def doBattery(P):
     rate = 0
     if(P>0):
         if(P > 5):
             P = 5
         rate = -P
-    elif(P < 0):
+    elif(P < 0 ):
         if(P < -5):
             P = -5
         rate = -P
     return rate
-
-def modelSystemFromSystem(n,Solars,G,drawGraph = True ,gamma = 1, kappa = 10,tmax = 24):
-    thetazero = np.zeros(2 * n)
-    A = nx.to_numpy_array(G)
-    def dtheta(theta , t):
-        systems = []
-        P = np.zeros(n)
-        total = 0
-        for i in range(1,n):
-            P[i] = netPower(t,i,Solars)
-            total += P[i]
-        P[0] = -1 * total
-        for i in range(n):
-            systems.append(theta[2 * i + 1])
-            system = P[i] - gamma * theta[2 * i + 1]
-            for j in range(n):
-                system -= kappa * A[i,j] * np.sin(theta[2 * i] - theta[2 * j])
-            systems.append(system)
-        return systems
-    t = np.linspace(0,tmax * 360 ,1000)
-    sol = sp.odeint(dtheta,thetazero,t)
-    if(drawGraph):
-        plt.xticks([0,1*360,2*360,3*360,4*360,5*360,6*360,7*360,8*360,9*360,10*360,11*360,12*360,13*360,14*360,15*360,16*360,17*360,18*360,19*360,20*360,21*360,22*360,23*360,24*360],[0,1,2,3,4,5,6,7,8,9,10,11,12,1,2,3,4,5,6,7,8,9,10,11,12])
-        plt.plot(t,sol[:,2::2])
-        plt.plot(t,sol[:,0],label = 'Grid usage')
-        plt.legend()
-        plt.xlim(0,24*360)
-        plt.xlabel('time (AM/PM)')
-        plt.ylabel(r'$\theta$ deviation of phase angle')
-        plt.show()
-    return sol
-
+t = np.linspace(0,24*360,1000)
 n = 10
 Solars = SG.randomSolars(n,4)
-G = nx.watts_strogatz_graph(n, 4, 0.1) 
-#modelSystemFromSystem(n,Solars,G,True)
+P = np.zeros(n)
+y = np.zeros(1000)
+y2 = np.zeros(1000)
+y3 = np.zeros(1000)
+y4 = np.zeros(1000)
+for j in range(1000):
+    total = 0
+    for i in range(1,n):
+        P[i] = netPower(t[j],i,Solars)
+        total += P[i]
+        y3[j] -= getCon(t[j])
+        if(Solars[i] == 1):
+            y2[j] += getGen(t[j])
+            y4[j] += doBattery(y2[j] + y3[j])        
+    y[j] = -total
+plt.plot(t,y,label = 'Input/Output from grid')
+plt.plot(t,y2,label = 'Solar generation')
+plt.plot(t,y3,label = 'Consumption')
+plt.plot(t,y4,label = 'Battery')
+plt.fill_between(
+        x= t, 
+        y1= y, y2 = 0,
+        color= "g",
+        alpha= 0.4,label = 'Importing')
+plt.fill_between(
+        x= t, 
+        y1= 0, y2 = y4,
+        where= (7.2*360 < t)&(t < 17*360),
+        color= "b",
+        alpha= 0.4,label = 'Charging')
+plt.fill_between(
+        x= t, 
+        y1= y4, y2 = 0,
+        where= (7.2*360 > t)&(t > 0),
+        color= "y",
+        alpha= 0.4,label = 'Discharging')
+plt.fill_between(
+        x= t, 
+        y1= y4, y2 = 0,
+        where= (t > 17 * 360)&(t < 24 * 360),
+        color= "y",
+        alpha= 0.4)
+plt.hlines(0,0,24*360)
+plt.xlim(0,24*360)
+plt.legend()
+plt.xticks([0,1*360,2*360,3*360,4*360,5*360,6*360,7*360,8*360,9*360,10*360,11*360,12*360,13*360,14*360,15*360,16*360,17*360,18*360,19*360,20*360,21*360,22*360,23*360,24*360],[0,1,2,3,4,5,6,7,8,9,10,11,12,1,2,3,4,5,6,7,8,9,10,11,12])
+plt.xlabel('time (AM/PM)')
+plt.ylabel('Power (KW/H)')
+plt.show()
+plt.show()

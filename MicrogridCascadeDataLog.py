@@ -3,26 +3,19 @@ import matrixModel as MM
 import networkx as nx
 import matplotlib.pyplot as plt
 import systemGenerators as SG
-import cascadingFaliures as CF
-import cascadePlus as CP
+import cascadePlusMicrogrid as CPM
 from openpyxl import Workbook
 
-n=30
+n=10
 kappa = n
-gamma = 1
-gen = 15
-con = 15
-pas = 0
-k = 4
-p = 0.1
 intervals = 10
 wb = Workbook()
 ws = wb.active
-acastars = np.linspace(0.5,1.5,intervals)
+acastars = np.linspace(1,15,intervals)
 ws.append(list(acastars))
 for i in range(10):
-    G = nx.watts_strogatz_graph(n, k, p) 
-    P = SG.randomisePower(gen,con,n)
+    G = nx.watts_strogatz_graph(n, 4, 0.1) 
+    Solars = SG.randomSolars(n,4)
     Data1 = []
     Data2 = []
     Data3 = []
@@ -30,7 +23,7 @@ for i in range(10):
     for a in range(intervals):
         acastar = acastars[a]
         #S.append(CF.dynamicCascade(acastar,G.copy(),P.copy()))
-        (S,edgesBroken,nodesFailed,cascadeTime) = CP.dynamicCascade(acastar,G.copy(),P.copy(),False)
+        (S,edgesBroken,nodesFailed,cascadeTime) = CPM.dynamicCascade(acastar,G.copy(),Solars.copy(),False)
         print(S,edgesBroken,nodesFailed,cascadeTime)
         Data1.append(S)
         Data2.append(edgesBroken)

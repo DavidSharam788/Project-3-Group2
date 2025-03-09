@@ -72,11 +72,11 @@ def modelSystemFromSystem(n,Solars,G,drawGraph = True ,gamma = 1, kappa = 10,tma
         plt.xlim(0,24*360)
         plt.xlabel('time (AM/PM)')
         plt.ylabel(r'$\theta$ deviation of phase angle')
-        plt.show()
+        #plt.show()
     return sol
 
 n = 10
 Solars = SG.randomSolars(n,4)
 Batteries = SG.randomSolars(n,4)
 G = nx.watts_strogatz_graph(n, 4, 0.1) 
-modelSystemFromSystem(n,Solars,G,True)
+#modelSystemFromSystem(n,Solars,G,True)
