@@ -15,10 +15,10 @@ con = 15
 pas = 0
 k = 4
 p = 0.1
-intervals = 10
+intervals = 30
 wb = Workbook()
 ws = wb.active
-acastars = np.linspace(0.5,1.5,intervals)
+acastars = np.linspace(0,2.5,intervals)
 ws.append(list(acastars))
 for i in range(10):
     G = nx.watts_strogatz_graph(n, k, p) 

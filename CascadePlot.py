@@ -25,10 +25,10 @@ for i in range(dat_len):
             Data3[j] += int(sheet_obj.cell(row = i + 1, column = j + 1).value)/590
         elif((i-1)%4 == 3):
             Data4[j] += float(sheet_obj.cell(row = i + 1, column = j + 1).value)/10
-#plt.plot(acastars,Data1,label = 'S')
-#plt.plot(acastars,Data2,label = 'Overloads')
-#plt.plot(acastars,Data3,label = 'Desyncs')
-plt.plot(acastars,Data4)
+plt.plot(acastars,Data1,label = 'S')
+plt.plot(acastars,Data2,label = 'Overloads')
+plt.plot(acastars,Data3,label = 'Desyncs')
+#plt.plot(acastars,Data4)
 plt.legend()
 plt.ylabel("Cascade duration")
 plt.xlabel(r"$\alpha_c$")

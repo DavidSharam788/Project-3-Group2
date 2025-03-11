@@ -207,7 +207,7 @@ def dynamicCascade(alphastar,G,p,debug = False):
 
 n=30
 alpha = 10
-alphastar = 1
+alphastar = 0
 kappa = n
 gamma = 1
 gen = 15
